@@ -10,7 +10,7 @@ services:
       - php
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./:/app
+      - ./apache2:/usr/local/apache2/htdocs/
     ports:
       - '${APACHE2_PORT:-80}:80'
       - '${APACHE2_PORT_SSL:-443}:443'
