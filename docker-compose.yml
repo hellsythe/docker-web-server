@@ -10,7 +10,9 @@ services:
       - php
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./apache2:/usr/local/apache2/htdocs/
+      - ./apache2/htdocs:/usr/local/apache2/htdocs/
+      - ./apache2/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./apache2/sites-enabled:/usr/local/apache2/conf/sites-enabled/
     ports:
       - '${APACHE2_PORT:-80}:80'
       - '${APACHE2_PORT_SSL:-443}:443'
