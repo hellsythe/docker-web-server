@@ -10,6 +10,6 @@ sdkconsultoria.com. IN TXT "v=spf1 a mx ip4:74.208.49.200 -all"
 sdkconsultoria.com. IN A 74.208.187.44
 www.sdkconsultoria.com. IN CNAME @
 mx1.sdkconsultoria.com. IN A 74.208.49.200
-sdkconsultoria.com. NS ns1
-sdkconsultoria.com. NS ns2
-sdkconsultoria.com. NS ns3
+sdkconsultoria.com. IN NS ns1
+sdkconsultoria.com. IN NS ns2
+sdkconsultoria.com. IN NS ns3
