@@ -16,6 +16,9 @@ Este docker-compose permite levantar facilmente un servidor web LAMP incluyendo 
 
 ``docker-compose up -d``
 
+``docker-compose exec php docker-php-ext-install pdo_mysql``
+``docker-compose restart php``
+
 3. Opcional en linux systemd-resolved debe ser desactivado para usar coredns
 
 ``sudo systemctl disable systemd-resolved.service``
