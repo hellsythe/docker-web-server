@@ -32,4 +32,4 @@ END``
 
 4. Crear certificados
 
-``certbot certonly --nginx -d ejemplo.com``
+``certbot certonly --nginx -d ejemplo.com --no-redirect``
