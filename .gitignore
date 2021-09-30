@@ -1,2 +1,2 @@
-apache2/htdocs/*
-!apache2/htdocs/index.html
+nginx/htdocs/*
+!nginx/htdocs/index.html
