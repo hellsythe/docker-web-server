@@ -2,36 +2,35 @@ version: '3.7'
 
 services:
 
-  nginx:
-    image: nginx
-    restart: on-failure
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ./nginx:/etc/nginx/conf.d/
-    ports:
-      - '${NGINX_PORT:-80}:80'
-      - '${NGINX_PORT_SSL:-443}:443'
-    networks:
-      servers:
-        ipv4_address: 172.128.10.2
-    extra_hosts:
-      - host.docker.internal:host-gateway
+  # nginx:
+  #   image: nginx
+  #   restart: on-failure
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - ./nginx:/etc/nginx/conf.d/
+  #   ports:
+  #     - '${NGINX_PORT:-80}:80'
+  #     - '${NGINX_PORT_SSL:-443}:443'
+  #   networks:
+  #     servers:
+  #       ipv4_address: 172.128.10.2
+  #   extra_hosts:
+  #     - host.docker.internal:host-gateway
 
   apache:
-    image: httpd
+    build:
+      context: ./apache2
     restart: on-failure
     links:
-      - mysql
       - php
+      # - mysql
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./apache2/htdocs:/usr/local/apache2/htdocs/
-      - ./apache2/httpd.conf:/usr/local/apache2/conf/httpd.conf
-      - ./apache2/httpd-ssl.conf:/usr/local/apache2/conf/extra/httpd-ssl.conf
-      - ./apache2/sites-enabled:/usr/local/apache2/conf/sites-enabled/
-      - ./apache2/certificates:/usr/local/apache2/certificates/
-    secrets:
-      - host_ssh_key
+      - ./apache2/sites-enabled:/etc/apache2/sites-enabled
+      - ./apache2/certificates/:/etc/apache2/certificates
+      - /etc/ssl/certs/ssl-cert-snakeoil.pem:/etc/ssl/certs/ssl-cert-snakeoil.pem
+      - /etc/ssl/private/ssl-cert-snakeoil.key:/etc/ssl/private/ssl-cert-snakeoil.key
+      - ./apache2/htdocs:/var/www/html
     networks:
       servers:
         ipv4_address: 172.128.10.3
@@ -39,54 +38,54 @@ services:
   php:
     image: php:fpm
     restart: on-failure
-    links:
-      - mysql
+    # links:
+    #   - mysql
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./apache2/htdocs:/var/www/html/
+      - ./apache2/htdocs:/var/www/html
     networks:
       servers:
         ipv4_address: 172.128.10.4
 
-  mysql:
-    image: mysql:8.0
-    restart: on-failure
-    environment:
-      - MYSQL_ROOT_PASSWORD=verysecret
-      - MYSQL_DATABASE=sdk_template
-      - MYSQL_USER=sdk_template
-      - MYSQL_PASSWORD=secret
-      - MYSQL_ROOT_HOST=%
-    networks:
-      servers:
-        ipv4_address: 172.128.10.5
-    volumes:
-      - db-mysql:/var/lib/mysql
+  # mysql:
+  #   image: mysql:8.0
+  #   restart: on-failure
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=verysecret
+  #     - MYSQL_DATABASE=sdk_template
+  #     - MYSQL_USER=sdk_template
+  #     - MYSQL_PASSWORD=secret
+  #     - MYSQL_ROOT_HOST=%
+  #   networks:
+  #     servers:
+  #       ipv4_address: 172.128.10.5
+  #   volumes:
+  #     - db-mysql:/var/lib/mysql
 
-  redis:
-    image: 'redis:alpine'
-    restart: on-failure
-    ports:
-      - '${REDIS_PORT:-6379}:6379'
-    networks:
-      servers:
-        ipv4_address: 172.128.10.6
-
-  coredns:
-    image: 'coredns/coredns'
-    command: -conf /root/Corefile
-    restart: on-failure
-    volumes:
-      - ./coredns/:/root/
-    ports:
-      - '${COREDNS_PORT:-53}:53/udp'
-    networks:
-      servers:
-        ipv4_address: 172.128.10.7
-
-secrets:
-  host_ssh_key:
-    file: ~/.ssh/id_rsa
+#   redis:
+#     image: 'redis:alpine'
+#     restart: on-failure
+#     ports:
+#       - '${REDIS_PORT:-6379}:6379'
+#     networks:
+#       servers:
+#         ipv4_address: 172.128.10.6
+#
+#   coredns:
+#     image: 'coredns/coredns'
+#     command: -conf /root/Corefile
+#     restart: on-failure
+#     volumes:
+#       - ./coredns/:/root/
+#     ports:
+#       - '${COREDNS_PORT:-53}:53/udp'
+#     networks:
+#       servers:
+#         ipv4_address: 172.128.10.7
+#
+# secrets:
+#   host_ssh_key:
+#     file: ~/.ssh/id_rsa
 
 networks:
   servers:
