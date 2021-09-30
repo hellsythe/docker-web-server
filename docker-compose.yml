@@ -31,6 +31,7 @@ services:
       - /etc/ssl/certs/ssl-cert-snakeoil.pem:/etc/ssl/certs/ssl-cert-snakeoil.pem
       - /etc/ssl/private/ssl-cert-snakeoil.key:/etc/ssl/private/ssl-cert-snakeoil.key
       - ./apache2/htdocs:/var/www/html
+      - ./apache2/apache2.conf:/etc/apache2/apache2.conf
     networks:
       servers:
         ipv4_address: 172.128.10.3
