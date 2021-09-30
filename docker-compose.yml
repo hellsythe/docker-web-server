@@ -3,7 +3,10 @@ version: '3.7'
 services:
 
   nginx:
-    image: nginx
+    build:
+      context: ./nginx
+      args:
+        - ADMIN_EMAIL=camilo@sdkconsultoria.com
     restart: on-failure
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -16,25 +19,6 @@ services:
     ports:
       - '${NGINX_PORT:-80}:80'
       - '${NGINX_PORT_SSL:-443}:443'
-
-  # apache:
-  #   build:
-  #     context: ./apache2
-  #   restart: on-failure
-  #   links:
-  #     - php
-  #     - mysql
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - ./apache2/sites-enabled:/etc/apache2/sites-enabled
-  #     - ./apache2/certificates/:/etc/apache2/certificates
-  #     - /etc/ssl/certs/ssl-cert-snakeoil.pem:/etc/ssl/certs/ssl-cert-snakeoil.pem
-  #     - /etc/ssl/private/ssl-cert-snakeoil.key:/etc/ssl/private/ssl-cert-snakeoil.key
-  #     - ./apache2/htdocs:/var/www/html
-  #     - ./apache2/apache2.conf:/etc/apache2/apache2.conf
-  #   networks:
-  #     servers:
-  #       ipv4_address: 172.128.10.3
 
   php:
     build:
@@ -72,19 +56,18 @@ services:
     networks:
       servers:
         ipv4_address: 172.128.10.6
-#
-#   coredns:
-#     image: 'coredns/coredns'
-#     command: -conf /root/Corefile
-#     restart: on-failure
-#     volumes:
-#       - ./coredns/:/root/
-#     ports:
-#       - '${COREDNS_PORT:-53}:53/udp'
-#     networks:
-#       servers:
-#         ipv4_address: 172.128.10.7
-#
+
+  coredns:
+    image: 'coredns/coredns'
+    command: -conf /root/Corefile
+    restart: on-failure
+    volumes:
+      - ./coredns/:/root/
+    ports:
+      - '${COREDNS_PORT:-53}:53/udp'
+    networks:
+      servers:
+        ipv4_address: 172.128.10.7
 
 networks:
   servers:
